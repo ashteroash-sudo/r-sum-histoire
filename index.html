@@ -49,13 +49,18 @@
   /* ---------- Text zone (left) ---------- */
   #textZone{
     position:absolute; left:0; width:44%; top:0; height:100%;
-    display:flex; align-items:flex-start;
-    padding: 5.5vh 3.2vw 5.5vh 4.2vw;
+    padding: 6vh 3.2vw 6vh 4.2vw;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 100%);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 100%);
+  }
+  #textClip{
+    height:100%; overflow:hidden;
+    display:flex; align-items:flex-end;
   }
   #storyText{
     color:var(--ink);
-    font-size: clamp(0.82rem, 1.3vw, 1.12rem);
-    line-height:1.48;
+    font-size: clamp(1.15rem, 3.1vh, 2.15rem);
+    line-height:1.42;
     font-weight:400;
     letter-spacing:.01em;
     text-shadow: 0 2px 14px rgba(0,0,0,.8);
@@ -178,7 +183,7 @@
   <div id="leftScrim"></div>
   <div id="rightScrim"></div>
 
-  <div id="textZone"><div id="storyText"></div></div>
+  <div id="textZone"><div id="textClip"><div id="storyText"></div></div></div>
 
   <div id="titleWrap">
     <h1 id="titleText">Vampire<br>la Mascarade</h1>
