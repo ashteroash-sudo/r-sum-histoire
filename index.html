@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Vampire la Mascarade — Intro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #e9e1cf;
+    --ink-dim: #c9bfa8;
+    --blood: #8a0f0f;
+    --blood-bright: #c81c1c;
+    --black-scrim: 6,3,4;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    background:#000; overflow:hidden;
+    font-family:'Cormorant Garamond', serif;
+  }
+  #stage{
+    position:relative; width:100vw; height:100vh; overflow:hidden;
+    transform-origin:center center;
+  }
+
+  /* ---------- Background image ---------- */
+  #bg{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:52% 50%;
+    filter:saturate(1.05) contrast(1.05);
+  }
+  .vignette{
+    position:absolute; inset:0;
+    background:radial-gradient(ellipse at 60% 45%, rgba(0,0,0,0) 35%, rgba(0,0,0,.55) 100%);
+    pointer-events:none;
+  }
+
+  /* ---------- Left / right scrims ---------- */
+  #leftScrim, #rightScrim{
+    position:absolute; top:0; height:100%;
+    background:rgb(var(--black-scrim));
+    opacity:0;
+  }
+  #leftScrim{ left:0; width:44%; }
+  #rightScrim{ left:44%; width:56%; }
+
+  /* ---------- Text zone (left) ---------- */
+  #textZone{
+    position:absolute; left:0; width:44%; top:0; height:100%;
+    display:flex; align-items:flex-start;
+    padding: 5.5vh 3.2vw 5.5vh 4.2vw;
+  }
+  #storyText{
+    color:var(--ink);
+    font-size: clamp(0.82rem, 1.3vw, 1.12rem);
+    line-height:1.48;
+    font-weight:400;
+    letter-spacing:.01em;
+    text-shadow: 0 2px 14px rgba(0,0,0,.8);
+    white-space:pre-wrap;
+  }
+  #storyText .cursor{
+    display:inline-block; width:.5ch;
+    color:var(--blood-bright);
+    animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- Title ---------- */
+  #titleWrap{
+    position:absolute; left:0; width:44%; top:0; height:100%;
+    display:flex; align-items:center; justify-content:flex-start;
+    padding: 0 3vw 0 4vw;
+    opacity:0;
+  }
+  #titleText{
+    font-family:'UnifrakturCook', serif;
+    font-size: clamp(2.6rem, 5.6vw, 5.2rem);
+    line-height:1.05;
+    margin:0;
+    color: var(--blood);
+    background: linear-gradient(180deg, #d4291f 0%, #7c0b0b 55%, #4a0505 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter: drop-shadow(0 2px 0 #2b0303) drop-shadow(0 10px 24px rgba(120,0,0,.55));
+    position:relative;
+  }
+  .drip{
+    position:absolute; width:.28em; border-radius:0 0 50% 50%;
+    background:linear-gradient(180deg, #9a1414, #4a0404);
+    top:100%; opacity:.9;
+    animation: dripgrow 2.6s ease-in forwards;
+    transform-origin:top center;
+  }
+  @keyframes dripgrow{
+    0%{ height:0; opacity:0; }
+    20%{ opacity:.95; }
+    100%{ height: var(--drip-h, 2.4em); opacity:.85; }
+  }
+
+  /* ---------- Warning line under title ---------- */
+  #warnLine{
+    position:absolute; left:4vw; bottom:9vh; width:38%;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic; font-weight:600;
+    color:var(--ink-dim);
+    font-size: clamp(1rem,1.3vw,1.3rem);
+    letter-spacing:.03em;
+    opacity:0;
+    text-shadow:0 2px 10px rgba(0,0,0,.8);
+  }
+
+  /* ---------- Video window (right) ---------- */
+  #videoWindow{
+    position:absolute; left:44%; width:56%; top:0; height:100%;
+    overflow:hidden; opacity:0;
+  }
+  #charVideo{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; object-position:58% 30%;
+  }
+
+  /* ---------- CRT power-off ---------- */
+  .crt-off{
+    animation: crtOff 900ms ease-in forwards;
+  }
+  @keyframes crtOff{
+    0%{ transform:scaleY(1) scaleX(1); filter:brightness(1); }
+    55%{ transform:scaleY(.015) scaleX(1); filter:brightness(2.2); }
+    75%{ transform:scaleY(.015) scaleX(.015); filter:brightness(3.5); }
+    100%{ transform:scaleY(.015) scaleX(.015); filter:brightness(0); opacity:0; }
+  }
+  #flash{
+    position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none;
+  }
+
+  /* ---------- Start screen ---------- */
+  #startScreen{
+    position:absolute; inset:0; z-index:50;
+    background:rgba(4,2,3,.72);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    backdrop-filter: blur(2px);
+  }
+  #startScreen p{
+    color:var(--ink);
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic; font-weight:600;
+    font-size: clamp(1.1rem, 2vw, 1.6rem);
+    letter-spacing:.05em;
+    border:1px solid rgba(233,225,207,.35);
+    padding: .9em 1.8em;
+    animation: pulseGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{ box-shadow:0 0 0 rgba(200,28,28,0); }
+    50%{ box-shadow:0 0 26px rgba(200,28,28,.35); }
+  }
+  #startScreen.hidden{ display:none; }
+
+  /* ---------- Replay ---------- */
+  #replay{
+    position:absolute; bottom:2.2vh; left:50%; transform:translateX(-50%);
+    color:var(--ink-dim); font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-size:1rem; letter-spacing:.08em; opacity:0; pointer-events:none;
+    z-index:60; cursor:pointer; text-shadow:0 1px 6px rgba(0,0,0,.9);
+  }
+  #replay.show{ opacity:.75; pointer-events:auto; transition:opacity .8s ease; }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <img id="bg" src="assets/bg.jpg" alt="">
+  <div class="vignette"></div>
+
+  <div id="leftScrim"></div>
+  <div id="rightScrim"></div>
+
+  <div id="textZone"><div id="storyText"></div></div>
+
+  <div id="titleWrap">
+    <h1 id="titleText">Vampire<br>la Mascarade</h1>
+  </div>
+  <div id="warnLine"></div>
+
+  <div id="videoWindow"><video id="charVideo" src="assets/vampire.mp4" playsinline preload="auto"></video></div>
+
+  <div id="flash"></div>
+</div>
+
+<div id="startScreen"><p>Cliquez pour commencer la séance</p></div>
+<div id="replay">◆ rejouer l'intro</div>
+
+<audio id="narration" src="assets/narration.mp3" preload="auto"></audio>
+<audio id="warning" src="assets/warning.mp3" preload="auto"></audio>
+
+<script>
+const storyTextRaw = `Vous avez été convoqués au Trône... par le Prince John Dane.
+À ses côtés... le Shérif Keokuk... colosse Gangrel... impose un silence de mort, prêt à broyer la moindre contestation.
+On vous a confié une mission : élucider le meurtre d'un Toréador influent.
+Dans les couloirs de l'Élysium... Maria Garcia, l'infante du défunt, vous a pris à partie... avant que le Primogène William Munchkin ne vous tire de ses griffes.
+Mais la courtoisie des Anciens... est toujours empoisonnée...
+Pour remonter la piste de Francis... vous avez dû pirater les serveurs de Rudy Montero. C'est là que vous avez découvert la preuve d'un achat secret... un complexe hôtelier abandonné... à Waukegan.
+En fouillant le havre de Francis, à Pilsen... entre les croquis étranges et une lettre manuscrite révélant ses obsessions pour la Géhenne et les Antédiluviens... votre Malkavien a reçu... une vision.
+Aujourd'hui... guidés par ces indices... vous vous retrouvez enfin à Waukegan.
+Devant vous... sous un orage battant... se dresse la silhouette décrépite... de l'Hôtel Michigan Coastline.`;
+
+const WARN_LINE = "Une dernière chose... essayez de ne pas mourir.";
+
+// ---- tunable timings (ms) ----
+const T = {
+  scrimFadeIn: 1400,
+  textStartDelay: 500,      // delay after scrim starts, before typing+audio begin
+  targetTypingMs: 63000,    // typing should finish comfortably before narration ends
+  pauseAfterNarration: 1300,
+  blackoutFade: 1400,
+  titleFadeIn: 1800,
+  delayBeforeWarnAudio: 500,
+  pauseAfterWarning: 700,
+  revealFade: 1600,
+  crtDelayAfterVideo: 400
+};
+
+const els = {
+  stage: document.getElementById('stage'),
+  leftScrim: document.getElementById('leftScrim'),
+  rightScrim: document.getElementById('rightScrim'),
+  storyText: document.getElementById('storyText'),
+  titleWrap: document.getElementById('titleWrap'),
+  warnLine: document.getElementById('warnLine'),
+  videoWindow: document.getElementById('videoWindow'),
+  video: document.getElementById('charVideo'),
+  narration: document.getElementById('narration'),
+  warning: document.getElementById('warning'),
+  startScreen: document.getElementById('startScreen'),
+  replay: document.getElementById('replay'),
+  flash: document.getElementById('flash')
+};
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function fade(el, to, ms){
+  return new Promise(res=>{
+    el.style.transition = `opacity ${ms}ms ease`;
+    requestAnimationFrame(()=>{ el.style.opacity = to; });
+    setTimeout(res, ms);
+  });
+}
+function onEndedOnce(audioEl){
+  return new Promise(res=>{
+    const h = ()=>{ audioEl.removeEventListener('ended', h); res(); };
+    audioEl.addEventListener('ended', h);
+  });
+}
+
+async function typewriter(el, text, targetMs){
+  const pauseMs = 340;
+  const pauseCount = (text.match(/\.\.\./g)||[]).length;
+  const budget = Math.max(targetMs - pauseCount*pauseMs, text.length*8);
+  const perChar = budget / text.length;
+
+  el.innerHTML = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  cursor.textContent = '▍';
+
+  let buffer = '';
+  for(let i=0;i<text.length;i++){
+    buffer += text[i];
+    el.innerHTML = buffer.replace(/\n/g,'<br>');
+    el.appendChild(cursor);
+    if(text.slice(i-2,i+1) === '...'){
+      await sleep(pauseMs);
+    } else {
+      await sleep(perChar);
+    }
+  }
+  cursor.remove();
+}
+
+async function typeSimple(el, text, perChar){
+  el.textContent = '';
+  for(let i=0;i<text.length;i++){
+    el.textContent += text[i];
+    await sleep(perChar);
+  }
+}
+
+function addDrips(){
+  const positions = [
+    {left:'14%', h:'2.1em'}, {left:'46%', h:'1.4em'}, {left:'74%', h:'2.6em'}
+  ];
+  positions.forEach((p,i)=>{
+    const d = document.createElement('div');
+    d.className = 'drip';
+    d.style.left = p.left;
+    d.style.setProperty('--drip-h', p.h);
+    d.style.animationDelay = (i*260)+'ms';
+    els.titleText.appendChild(d);
+  });
+}
+const els2 = { titleText: document.getElementById('titleText') };
+Object.assign(els, els2);
+
+async function runSequence(){
+  // 1) scrim + text zone fade in
+  fade(els.leftScrim, 0.88, T.scrimFadeIn);
+  await sleep(T.textStartDelay);
+
+  els.narration.currentTime = 0;
+  const narrationPlay = els.narration.play();
+  const typingDone = typewriter(els.storyText, storyTextRaw, T.targetTypingMs);
+
+  await onEndedOnce(els.narration);
+  await typingDone.catch(()=>{});
+
+  await sleep(T.pauseAfterNarration);
+
+  // 2) full blackout
+  await Promise.all([
+    fade(els.leftScrim, 0.98, T.blackoutFade),
+    fade(els.rightScrim, 0.98, T.blackoutFade)
+  ]);
+  els.storyText.style.opacity = 0;
+
+  // 3) title
+  els.titleWrap.style.transition = `opacity ${T.titleFadeIn}ms ease`;
+  els.titleWrap.style.opacity = 1;
+  addDrips();
+  await sleep(T.titleFadeIn);
+
+  await sleep(T.delayBeforeWarnAudio);
+  els.warnLine.style.transition = 'opacity 900ms ease';
+  els.warnLine.style.opacity = 1;
+  typeSimple(els.warnLine, WARN_LINE, 42);
+  els.warning.currentTime = 0;
+  els.warning.play();
+  await onEndedOnce(els.warning);
+
+  await sleep(T.pauseAfterWarning);
+
+  // 4) reveal video on the right, image fades back
+  els.video.currentTime = 0;
+  await Promise.all([
+    fade(els.rightScrim, 0, T.revealFade),
+    fade(els.videoWindow, 1, T.revealFade)
+  ]);
+  try{ await els.video.play(); }catch(e){}
+
+  await onEndedOnce(els.video);
+
+  await sleep(T.crtDelayAfterVideo);
+
+  // 5) CRT shutdown
+  els.flash.style.transition = 'opacity 120ms ease';
+  els.flash.style.opacity = 0.9;
+  els.stage.classList.add('crt-off');
+  await sleep(950);
+  els.flash.style.opacity = 0;
+
+  els.replay.classList.add('show');
+}
+
+function resetStage(){
+  els.stage.classList.remove('crt-off');
+  els.stage.style.transform = '';
+  els.stage.style.filter = '';
+  els.leftScrim.style.transition = 'none'; els.leftScrim.style.opacity = 0;
+  els.rightScrim.style.transition = 'none'; els.rightScrim.style.opacity = 0;
+  els.titleWrap.style.transition = 'none'; els.titleWrap.style.opacity = 0;
+  els.titleText.querySelectorAll('.drip').forEach(d=>d.remove());
+  els.warnLine.style.transition = 'none'; els.warnLine.style.opacity = 0; els.warnLine.textContent='';
+  els.videoWindow.style.transition = 'none'; els.videoWindow.style.opacity = 0;
+  els.storyText.style.opacity = 1; els.storyText.innerHTML = '';
+  els.video.pause();
+  els.replay.classList.remove('show');
+  void els.stage.offsetWidth; // reflow
+}
+
+els.startScreen.addEventListener('click', async ()=>{
+  els.startScreen.classList.add('hidden');
+  await runSequence();
+});
+
+els.replay.addEventListener('click', async ()=>{
+  resetStage();
+  await runSequence();
+});
+</script>
+</body>
+</html>
