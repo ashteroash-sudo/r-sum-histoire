@@ -202,17 +202,14 @@
 <audio id="warning" src="assets/warning.mp3" preload="auto"></audio>
 
 <script>
-const storyTextRaw = `**Précédemment... dans les Ombres de Chicago...**
-
-Arrivés devant l’Hôtel Michigan Coastline, vous avez d’abord dû chasser des squatteurs menaçants. À l’intérieur, le bâtiment semblait hanté... un jukebox s'allumant sans électricité, un téléphone sonnant dans le vide et d'étranges lumières spectrales.
-
-votre Malkavien ç eu une vision terrifiante de feu et de sang. plus tard les restes poignardés d'un homme et d'une femme... ultime piste menant au repaire macabre d'un Tzimisce du Sabbat.
-
-Rappelés d’urgence par le Prince John Dane, votre loyauté a été récompensée : l'ancienne demeure de Francis Ruiz Verde vous a été accordée comme havre.
-
-Mais la paix est de courte durée. Chargés d'endiguer la menace du Sabbat, vous avez plongé dans les entrailles de la ville... à la recherche du Grêlé, le courtier d'informations Nosferatu.
-
-En échange de ses révélations, le Grêlé exige un service : vous débarrasser des Sangs-Clairs qui squattent ses égouts.`;
+const storyTextRaw = `Le combat sanglant contre Marek et Sylvia s'est déroulé dans le sang et la cendre...
+mais alors que le combat tournait à votre désavantage, une nouvelle figure s'est avancée hors des ombres : Lucian Graves.
+Le charismatique Toréador, émissaire influent lié au Primogène Munchkins, est venu poser vous prêter main forte...
+Le brutal Pavel en profité pour mettre fin à un adversaire retors, pendant que Willy occupait Sylvia...
+la fin du combat sonna le début d'un nouveau chapitre... car à Chicago, le repos n'existe pas... Un message étrange est parvenu sur le téléphone de Vito...
+une sombre affaire de meurtre en série... Des meurtres étranges, des victimes intégralement vidées de leur sang, et une piste macabre qui a mené nos vampires jusqu'à la morgue du comté de Cook...
+la perception hors norme de Cassandre, vous à fait repérer le systeme de caméra de sécurité et grâce à l'ingéniosité de Vito, vous avez réussi à pirater le réseau de caméra de la morgue...
+Vous vous appretez alors à entrer...`;
 
 const WARN_LINE = "Une dernière chose... essayez de ne pas mourir.";
 
@@ -220,7 +217,7 @@ const WARN_LINE = "Une dernière chose... essayez de ne pas mourir.";
 const T = {
   scrimFadeIn: 1400,
   textStartDelay: 500,      // delay after scrim starts, before typing+audio begin
-  targetTypingMs: 63000,    // typing should finish comfortably before narration ends
+  targetTypingMs: 51000,    // typing should finish comfortably before narration ends
   pauseAfterNarration: 1300,
   blackoutFade: 1400,
   titleFadeIn: 1800,
