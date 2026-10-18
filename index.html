@@ -201,26 +201,13 @@
 <audio id="narration" src="assets/narration.mp3" preload="auto"></audio>
 <audio id="warning" src="assets/warning.mp3" preload="auto"></audio>
 
+<script src="config.js"></script>
 <script>
-const storyTextRaw = `La nuit a commencé par une convocation glaciale à l'Élysium de Chicago. Devant le Conseil réuni, le verdict est tombé : les réprimandes ont fusé et les preuves irréfutables de vos erreurs ont été étalées sous les dômes dorés.
-
-C'est alors qu'il a été traîné hors des ombres... Le Grêlé, le Nosferatu traqué, amené à son tour pour subir son exécution. Le visage ravagé, il s'est effondré en marmonnant de sa voix hachée et stridente :
-
-"Oui... oui... Le Grêlé sait... non, non, pas bruler le pauvre Grêlé ! Les précieux secrets... les grands ont tout vu, oui... oui !"
-
-Par miracle ou cruauté, la sentence de la Tour d'Ivoire s'est commuée en un exil immédiat vers Gary, la cité industrielle mourante de la Rust Belt.
-
-À votre arrivée dans cette ruine fumante, vous avez été immédiatement pris en étau : d'un côté Modius, le "Prince" déchu et vaniteux de la Camarilla ; de l'autre Juggler, le Baron Anarch charismatique. Chacun a tenté de vous courtiser et de vous utiliser pour contrôler le trafic de sang local.
-
-Puis vint l'ultime audience dans le manoir décatis de Modius. Le Prince vous a proposé sa première mission : si vous voulez vous faire votre place, vous devez purger la ville et vous débarrasser définitivement de la peste des Sangs-Clairs.`;
-
-const WARN_LINE = "Au revoir, mes petits chou-fleurs...";
-
 // ---- tunable timings (ms) ----
 const T = {
   scrimFadeIn: 1400,
   textStartDelay: 500,      // delay after scrim starts, before typing+audio begin
-  targetTypingMs: 76000,    // typing should finish comfortably before narration ends
+  typingMarginMs: 10000,    // le texte finit ~10 s avant la fin de la voix (calcul automatique)
   pauseAfterNarration: 1300,
   blackoutFade: 1400,
   titleFadeIn: 1800,
@@ -310,14 +297,29 @@ function addDrips(){
 const els2 = { titleText: document.getElementById('titleText') };
 Object.assign(els, els2);
 
+function getAudioDuration(audio){
+  return new Promise(res=>{
+    if(isFinite(audio.duration) && audio.duration > 0) return res(audio.duration);
+    const done = ()=> res(isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 60);
+    audio.addEventListener('loadedmetadata', done, {once:true});
+    setTimeout(done, 3000);
+  });
+}
+function computeTypingMs(durationSec){
+  const total = durationSec * 1000;
+  const margin = Math.min(T.typingMarginMs, total * 0.2);
+  return Math.max(4000, total - margin);
+}
+
 async function runSequence(){
   // 1) scrim + text zone fade in
   fade(els.leftScrim, 0.88, T.scrimFadeIn);
   await sleep(T.textStartDelay);
 
+  const typingMs = computeTypingMs(await getAudioDuration(els.narration));
   els.narration.currentTime = 0;
-  const narrationPlay = els.narration.play();
-  const typingDone = typewriter(els.storyText, storyTextRaw, T.targetTypingMs);
+  els.narration.play();
+  const typingDone = typewriter(els.storyText, STORY_TEXT, typingMs);
 
   await onEndedOnce(els.narration);
   await typingDone.catch(()=>{});
